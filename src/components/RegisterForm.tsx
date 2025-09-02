@@ -46,14 +46,14 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { name } }
+        options: { data: { name } },
       });
       if (error) throw error;
 
       const user = data.user;
-      const { error: insertError } = await supabase.from("admin").insert([
-        { id_user: user?.id, email, name }
-      ]);
+      const { error: insertError } = await supabase
+        .from("admin")
+        .insert([{ user_id: user?.id, email, name }]);
       if (insertError) throw insertError;
 
       alert("Conta criada com sucesso! Verifique seu e-mail.");
