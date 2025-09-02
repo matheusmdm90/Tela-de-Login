@@ -1,29 +1,42 @@
-import { useState } from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
-import { Separator } from './ui/separator';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { useState } from "react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Separator } from "./ui/separator";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { supabase } from "../supabase/supabaseClient";
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
 }
 
 export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
+    let { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
     // Simular chamada de API
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    console.log('Login attempt:', { email, password });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log("Login attempt:", { email, password });
     setIsLoading(false);
   };
 
@@ -52,14 +65,14 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
               />
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="password">Senha</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 id="password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 placeholder="Digite sua senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -71,7 +84,11 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>
@@ -96,11 +113,11 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Entrando...' : 'Entrar'}
+            {isLoading ? "Entrando..." : "Entrar"}
           </Button>
         </form>
       </CardContent>
-      
+
       <CardFooter className="flex flex-col space-y-4">
         <div className="relative w-full">
           <Separator />
@@ -108,9 +125,9 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             OU
           </span>
         </div>
-        
+
         <div className="text-center text-sm">
-          Não tem uma conta?{' '}
+          Não tem uma conta?{" "}
           <button
             type="button"
             onClick={onSwitchToRegister}
