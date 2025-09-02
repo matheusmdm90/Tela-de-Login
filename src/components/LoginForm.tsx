@@ -28,15 +28,18 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     e.preventDefault();
     setIsLoading(true);
 
-    let { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    // Simular chamada de API
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (error) {
+      alert("Erro ao fazer login: " + error.message);
+    } else {
+      alert("Login realizado com sucesso!");
+      // Aqui você pode redirecionar ou atualizar o estado do app
+    }
 
-    console.log("Login attempt:", { email, password });
     setIsLoading(false);
   };
 
